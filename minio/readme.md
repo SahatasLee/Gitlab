@@ -22,8 +22,12 @@ minio operator version 5.0.15
 ```bash
 # Add repo to helm
 helm repo add minio-operator https://operator.min.io
+helm repo update
+
+#
+helm search repo minio-operator/operator --versions | head -n 5
 # Install
-helm install minio-operator minio-operator/operator --version 5.0.15 -n minio 
+helm install minio-operator minio-operator/operator --version 5.0.15 -n minio --create-namespace
 ```
 
 ## Service
@@ -56,6 +60,13 @@ kubectl -n minio-tenants get secrets demo-user-0 -o jsonpath="{.data.CONSOLE_ACC
 
 # Secret key
 kubectl -n minio-tenants get secrets demo-user-0 -o jsonpath="{.data.CONSOLE_SECRET_KEY}" | base64 --decode
+```
+
+##
+
+```bash
+# login
+mc alias set myminio https://minioserver.example.net ACCESS_KEY SECRET_KEY
 ```
 
 ## Python SDK

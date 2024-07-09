@@ -1,6 +1,6 @@
 global:
   edition: ce
-  gitlabVersion: "16.11.4"
+  # gitlabVersion: "16.11.4"
   hosts:
     domain: domain.com
     externalIP: 10.111.0.121

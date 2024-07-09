@@ -1,7 +1,5 @@
 # Gitlab
 
-[Gitlab](https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html)
-
 ## Installation
 
 [Installing by Helm](\helm.md)
