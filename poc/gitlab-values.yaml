@@ -1,0 +1,236 @@
+global:
+  edition: ce
+  gitlabVersion: "16.11.4"
+  hosts:
+    domain: domain.com
+    externalIP: 10.111.0.121
+  gitlab:
+    webservice:
+      ingress:
+        tls:
+          secretName: gitlab-tls
+  ingress:
+    # Default, present here to be explicit.
+    configureCertmanager: false
+    enabled: true
+    # Toggle the TCP configuration and annotations to Traefik.
+    provider: traefik
+    # Alter the `kubernetes.io/ingress.class` annotation or
+    # `spec.ingressClassName` value chart-wide.
+    class: traefik
+    annotations:
+      # Tell Traefik that we've configured TLS
+      # NOTE: disable this if `global.ingress.tls.enabled=false`.
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      # Ensure the HTTP Routes only listen on 443, rather than all entrypoints.
+      # NOTE: set the value to `web` if `global.ingress.tls.enabled=false`.
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure 
+    tls:
+      secretName: gitlab-tls
+
+  psql:
+    host: 10.111.0.118
+    # serviceName: pgbouncer
+    port: 5432
+    # create database before install gitlab
+    database: gitlabhq_production
+    username: postgres
+    password:
+      useSecret: true
+      secret: gitlab-postgres
+      key: psql-password
+  ## https://docs.gitlab.com/charts/charts/globals#configure-gitaly-settings
+  gitaly:
+    enabled: true
+    internal:
+      names: [default]
+    external: []
+    service:
+      name: gitaly
+      type: ClusterIP
+      externalPort: 8075
+      internalPort: 8075
+      tls:
+        externalPort: 8076
+        internalPort: 8076
+    # tls:
+    #   enabled: true
+    #   secretName: gitlab-tls
+    ingress:
+      tls:
+        enabled: true
+        secretName: gitlab-tls
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
+  # minio:
+  #   enabled: false
+    # ingress:
+    #   tls:
+    #     enabled: true
+    #     secretName: gitlab-tls
+
+  minio:
+    enabled: false
+  registry:
+    bucket: gitlab-registry-storage
+  appConfig:
+    lfs:
+      bucket: gitlab-lfs-storage
+      connection: # https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/charts/globals.md#connection
+        secret: gitlab-rails-storage
+        key: connection
+    artifacts:
+      bucket: gitlab-artifacts-storage
+      connection:
+        secret: gitlab-rails-storage
+        key: connection
+    uploads:
+      bucket: gitlab-uploads-storage
+      connection:
+        secret: gitlab-rails-storage
+        key: connection
+    packages:
+      bucket: gitlab-packages-storage
+      connection:
+        secret: gitlab-rails-storage
+        key: connection
+    backups:
+      bucket: gitlab-backup-storage
+      tmpBucket: gitlab-tmp-storage
+
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-registry-settings
+  registry:
+    bucket: registry
+
+    certificate: {}
+      # secret:
+    httpSecret: {}
+      # secret:
+      # key:
+    notificationSecret: {}
+      # secret:
+      # key:
+    # tls:
+    #   enabled: true
+    #   secretName: gitlab-tls
+    redis:
+      cache:
+        password: {}
+    ingress:
+      tls:
+        enabled: true
+        secretName: gitlab-tls
+
+    # Settings utilized by other services referencing registry:
+    enabled: true
+    host:
+    # port: 443
+    api:
+      protocol: http
+      serviceName: registry
+      port: 5000
+    tokenIssuer: gitlab-issuer
+
+  ## https://docs.gitlab.com/charts/charts/globals#outgoing-email
+  ## Outgoing email server settings
+  smtp:
+    enabled: true
+    address: 10.111.0.249
+    port: 25
+    authentication: ""
+    openssl_verify_mode: none
+
+  ## https://docs.gitlab.com/charts/charts/globals#outgoing-email
+  ## Email persona used in email sent by GitLab
+  email:
+    display_name: GitLab
+
+  ## Timezone for containers.
+  time_zone: Asia/Bangkok
+
+  antiAffinity: soft
+  affinity:
+    podAntiAffinity:
+      topologyKey: "kubernetes.io/hostname"
+
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-workhorse-settings
+  ## Global settings related to Workhorse
+  workhorse:
+    serviceName: webservice-default
+    # tls:
+    #   enabled: false
+    #   secretName: gitlab-tls
+    ingress:
+      tls:
+        enabled: true
+        secretName: gitlab-tls
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-webservice
+  webservice:
+    workerTimeout: 60
+
+traefik:
+  install: true
+  # Ensure the IngressClass name and `global.ingress.class` value match.
+  # This can be removed if `global.ingress.class` is set to `$releaseName-traefik`.
+  fullnameOverride: traefik
+  ingressClass:
+    # Create an IngressClass object for Traefik.
+    enabled: true
+    # Helps an avoid error when making local templates.
+    fallbackApiVersion: v1
+
+certmanager-issuer:
+  enabled: false
+
+letsencrypt:
+  enabled: false
+
+nginx-ingress:
+  # Disable the deployment of the in-chart NGINX Ingress provider.
+  enabled: false
+
+## Configuration of Redis
+## https://docs.gitlab.com/charts/architecture/decisions#redis
+## https://docs.gitlab.com/charts/installation/deployment.html#redis
+redis:
+  install: true
+  auth:
+    existingSecret: gitlab-redis-secret
+    existingSecretKey: redis-password
+    usePasswordFiles: true
+  architecture: standalone
+  cluster:
+    enabled: false
+  metrics:
+    enabled: false
+  ingress:
+      tls:
+        enabled: true
+        secretName: gitlab-tls
+
+gitlab-runner:
+  install: false
+
+postgresql:
+  install: false
+
+certmanager:
+  install: false
+
+minio:
+  install: false
+
+gitlab:
+  toolbox:
+    backups:
+      objectStorage:
+        config:
+          secret: registry-storage
+          key: config
+registry:
+  storage:
+    secret: registry-storage
+    key: config

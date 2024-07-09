@@ -1,0 +1,10 @@
+psql:
+  host: 10.111.0.118
+  # serviceName: pgbouncer
+  port: 5432
+  database: gitlabhq_production
+  username: postgres
+  password:
+    useSecret: true
+    secret: gitlab-postgres
+    key: psql-password
