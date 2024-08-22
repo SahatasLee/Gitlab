@@ -49,17 +49,17 @@ kubectl patch service -n minio console -p '
 minio operator console
 
 ```bash
-kubectl -n minio-operator  get secret console-sa-secret -o jsonpath="{.data.token}" | base64 --decode
+kubectl -n minio  get secret console-sa-secret -o jsonpath="{.data.token}" | base64 --decode ; echo
 ```
 
 ## Access key & Secret key
 
 ```bash
 # Access key
-kubectl -n minio-tenants get secrets demo-user-0 -o jsonpath="{.data.CONSOLE_ACCESS_KEY}" | base64 --decode
+kubectl -n minio get secrets gitlab-user-0 -o jsonpath="{.data.CONSOLE_ACCESS_KEY}" | base64 --decode ; echo
 
 # Secret key
-kubectl -n minio-tenants get secrets demo-user-0 -o jsonpath="{.data.CONSOLE_SECRET_KEY}" | base64 --decode
+kubectl -n minio get secrets gitlab-user-0 -o jsonpath="{.data.CONSOLE_SECRET_KEY}" | base64 --decode ; echo
 ```
 
 ##

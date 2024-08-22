@@ -99,28 +99,28 @@ global:
       tmpBucket: gitlab-tmp-storage
 
 
-  ## https://docs.gitlab.com/charts/charts/globals#configure-registry-settings
-  registry:
-    bucket: registry
+  # ## https://docs.gitlab.com/charts/charts/globals#configure-registry-settings
+  # registry:
+  #   bucket: registry
 
-    certificate: {}
-      # secret:
-    httpSecret: {}
-      # secret:
-      # key:
-    notificationSecret: {}
-      # secret:
-      # key:
-    # tls:
-    #   enabled: true
-    #   secretName: gitlab-tls
-    redis:
-      cache:
-        password: {}
-    ingress:
-      tls:
-        enabled: true
-        secretName: gitlab-tls
+  #   certificate: {}
+  #     # secret:
+  #   httpSecret: {}
+  #     # secret:
+  #     # key:
+  #   notificationSecret: {}
+  #     # secret:
+  #     # key:
+  #   # tls:
+  #   #   enabled: true
+  #   #   secretName: gitlab-tls
+  #   redis:
+  #     cache:
+  #       password: {}
+  #   ingress:
+  #     tls:
+  #       enabled: true
+  #       secretName: gitlab-tls
 
     # Settings utilized by other services referencing registry:
     enabled: true

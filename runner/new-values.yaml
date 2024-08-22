@@ -19,4 +19,22 @@ runners:
       [runners.kubernetes]
         namespace = "{{.Release.Namespace}}"
         image = "alpine"
+        privileged = true
+        [[runners.kubernetes.host_aliases]]
+          ip = "10.111.0.121"
+          hostnames = ["gitlab.thaibevapp.com", "registry.thaibevapp.com", "kas.thaibevapp.com"]
+        [[runners.kubernetes.volumes.host_path]]
+          name = "docker"
+          mount_path = "/var/run/docker.sock"
+          read_only = true
+          host_path = "/var/run/docker.sock"
 certsSecretName: gitlab-cert
+serviceAccount:
+  create: true
+securityContext:
+  allowPrivilegeEscalation: true
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  privileged: true
+  capabilities:
+    drop: ["ALL"]

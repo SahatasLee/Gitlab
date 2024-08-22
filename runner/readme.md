@@ -1,5 +1,7 @@
 # Gitlab Runner
 
+https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml
+
 ## Install
 
 ```bash
